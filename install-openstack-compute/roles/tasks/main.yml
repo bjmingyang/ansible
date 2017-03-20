@@ -11,16 +11,14 @@
   yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
     state=present
 
-- name: Install HTTPD and OpenSSL
+- name: Install openstack repo
   yum: name={{ item }} state=present
   become: true
   with_items:
-    - httpd
-    - httpd-tools
-    - mod_ssl
-    - openssl
-    - openssl-libs
-    - net-snmp-utils
+    - centos-release-openstack-newton.noarch
+    
+    
+    
 
 - name: Setup nagios SSL HTTPD vhost
   copy: src=nagios.conf dest=/etc/httpd/conf.d/
