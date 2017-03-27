@@ -1,0 +1,15 @@
+DEVICE=bond0
+BOOTPROTO=static
+#NETWORK=192.168.1.0
+NETMASK=255.255.255.0
+#GATEWAY=192.168.14.1
+USERCTL=no
+IPADDR={{ansible_default_ipv4}}
+#{% set ipv4_host = host_prefix | unique | ipv4('host/prefix') | first %}
+#iface eth0 inet static
+#    address   {{ ipv4_host | ipaddr('address') }}
+#    network   {{ ipv4_host | ipaddr('network') }}
+#    netmask   {{ ipv4_host | ipaddr('netmask') }}
+#    broadcast {{ ipv4_host | ipaddr('broadcast') }}
+
+

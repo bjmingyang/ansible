@@ -1,0 +1,29 @@
+#-----
+- hosts: all
+  remote_user: root
+  gather_facts: True
+  tasks:
+  - name: create em1 bonding network config  file
+    copy: src=ifcfg-em1 dest=/etc/sysconfig/network-scripts/ifcfg-em1
+
+  - name: create  em2  bonding network config  file
+    copy: src=ifcfg-em2 dest=/etc/sysconfig/network-scripts/ifcfg-em2
+
+  - name: create  bond0  bonding network config  file
+    copy: src=ifcfg-bond0 dest=/etc/sysconfig/network-scripts/ifcfg-bond0
+
+  - name: create  bond  bonding network config  file
+    copy: src=bonding.conf dest=/etc/modprobe.d/bonding.conf
+
+  - name: set bond0 ipaddr
+    shell: echo IPADDR={{ ansible_default_ipv4.address }} >> /etc/sysconfig/network-scripts/ifcfg-bond0
+
+  - name: set bond0 netmask
+    shell: echo NETMASK={{ ansible_default_ipv4.netmask }} >> /etc/sysconfig/network-scripts/ifcfg-bond0
+
+  - name: set bond0 ipaddr
+    shell: echo GATEWAY={{ ansible_default_ipv4.gateway }} >> /etc/sysconfig/network-scripts/ifcfg-bond0 
+
+#  - name: use templete create bonding config file
+#    template src=ifcfg-bond0.j2 dest=/etc/sysconfig/network-scripts/ifcfg-bond0
+
