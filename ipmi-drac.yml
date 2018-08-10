@@ -1,0 +1,13 @@
+---
+- name: set network cfg
+  hosts: all
+  remote_user: mwang
+  gather_facts: True
+  tasks:
+  - name: Add static ipaddr
+    shell: ipmitool lan set 1 ipaddr 192.168.192.{{ ansible_default_ipv4.address.split('.')[3] }}
+  - name: Add static netmask
+    command: ipmitool lan set 1 netmask 255.255.255.0
+  - name: Add static defgw
+    command: ipmitool lan set 1 defgw ipaddr {{ item.defgw }}
+    
