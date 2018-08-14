@@ -1,0 +1,23 @@
+---
+- name: set network cfg
+  hosts: all
+#  remote_user: mwang
+  gather_facts: True
+  sudo: yes
+  tasks:
+
+#  - name: install ipmitool
+#    package: name= {{item}} state=installed
+#    with_items:
+#                 - OpenIPMI
+#                 - ipmitool
+  - name: install ipmitool yum
+    shell: curl -s http://linux.dell.com/repo/hardware/dsu/bootstrap.cgi | bash; yum install -y  srvadmin-all
+
+  - name: use racadm set idrac network
+    shell:   /opt/dell/srvadmin/bin/idracadm7  setniccfg -s 192.168.192.{{ ansible_default_ipv4.address.split('.')[3] }} 255.255.255.0 192.168.192.1
+    ignore_errors: yes
+
+  - name: if use bmc mode
+    shell: /opt/dell/srvadmin/sbin/omconfig chassis remoteaccess config=nic ipaddress=192.168.192.{{ ansible_default_ipv4.address.split('.')[3] }} subnet=255.255.255.0 gateway=192.168.192.1 ipsource=static
+    when: facter_dmi.product.name =="PowerEdge C5220"
