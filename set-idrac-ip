@@ -1,0 +1,63 @@
+---
+- hosts: all
+  name: set iDRAC Ipaddr
+  gather_facts: False
+  vars:
+     svctag_test: 8H730S2
+     network_configs:
+      1234567:
+        ip: 192.168.192.86
+      3444555:
+          ip: 192.168.192.85
+          netmask: 255.255.255.0
+          gateway: 192.168.192.254 
+      XXXX111:
+          ip: 172.16.9.111
+          netmask: 255.255.252.0
+          gateway: 172.16.8.1 
+     
+          ip: 10.10.10.65
+      XXXFWS2:
+          ip: 10.10.10.68
+          netmask: 255.255.255.0
+     
+          
+
+
+
+  tasks:
+    
+    - name: get dell server service-tag
+      raw: racadm getsvctag
+      register: svctag
+    
+    - name: show svctag
+      debug: 
+          msg="{{ svctag }}"      
+         
+    - name: show network 
+      debug: 
+          msg="{{ network_configs[svctag_test].ip }}"
+    - name: set idrac ip svctag to vars
+      set_fact:
+         SVCTAG: "{{ svctag.stdout_lines[0]}}" 
+    - name: show SVCTAG
+      debug: 
+          msg="{{ SVCTAG }}"   
+             
+    - name: show network 2
+      debug: 
+          msg="{{ network_configs[SVCTAG].ip }}"
+          #msg="{{ network_configs[SVCTAG] }}"   
+          #msg="{{ hostvars[inventory_hostname][network_configs][SVCTAG] }}"
+        
+          #msg="{{ lookup('vars', network_configs )[SVCTAG]}}" 
+    - name: set dell server idrac ip form service-tag
+      raw: racadm config -g cfgLanNetworking -o cfgNicIpAddress "{{ network_configs[SVCTAG].ip }}"  
+      when: SVCTAG is defined
+    - name: set dell server idrac netmask form service-tag
+      raw: racadm config -g cfgLanNetworking -o cfgNicNetmask "{{ network_configs[SVCTAG].netmask }}"
+      when: SVCTAG is defined
+    - name: set dell server idrac gw form service-tag
+      raw: racadm config -g cfgLanNetworking -o cfgNicGateway "{{ network_configs[SVCTAG].gateway }}"
+      when: SVCTAG is defined
